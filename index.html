@@ -58,18 +58,18 @@ button:hover {
   background-color: #007aa3;
 }
 
-.success-container {
+.message-container {
   display: none;
   margin-top: 20px;
   animation: fadeIn 0.6s ease-in-out;
 }
 
-.success-container img {
+.message-container img {
   width: 70px;
   margin-bottom: 15px;
 }
 
-.success-text {
+.message-text {
   font-size: 15px;
   color: #333;
 }
@@ -118,11 +118,21 @@ button:hover {
 
   </form>
 
-  <div class="success-container" id="success">
+  <!-- ÉXITO -->
+  <div class="message-container" id="success">
     <img src="tilde-verificacion.png" alt="Verificación exitosa">
-    <div class="success-text">
+    <div class="message-text">
       Te contactaremos cuanto antes.<br>
       Nuestro plazo para llamarte es de <b>24 a 48hs hábiles</b>.
+    </div>
+  </div>
+
+  <!-- ERROR DUPLICADO -->
+  <div class="message-container" id="error">
+    <img src="x-roja.png" alt="Solicitud duplicada">
+    <div class="message-text">
+      Ya registraste una solicitud en las últimas 24 horas.<br>
+      Si necesitás asistencia urgente, comunicate por nuestros canales oficiales.
     </div>
   </div>
 
@@ -130,10 +140,11 @@ button:hover {
 
 <script>
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbxit0D-Kel3KRipYmHzN43p8wd-tboaBT-DqYEXLnL84WsLyjT8uX3WlFjEUsdxb7UvPw/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbzfH73UiFixs1Chp5C1I29bmKoO5AJuYxdZMCzJF0alXdR5_ThIRpOxCzLjWNibhmqgIA/exec";
 
 const form = document.getElementById("formulario");
 const success = document.getElementById("success");
+const errorBox = document.getElementById("error");
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
@@ -146,9 +157,16 @@ form.addEventListener("submit", function(e) {
     body: JSON.stringify(data)
   })
   .then(response => response.text())
-  .then(() => {
-      form.style.display = "none";
+  .then(result => {
+
+    form.style.display = "none";
+
+    if (result === "YA_EXISTE") {
+      errorBox.style.display = "block";
+    } else {
       success.style.display = "block";
+    }
+
   })
   .catch(error => {
       alert("Hubo un error al enviar el formulario.");
