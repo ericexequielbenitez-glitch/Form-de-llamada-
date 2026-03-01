@@ -34,7 +34,7 @@ h2 {
   color: #333;
 }
 
-input, select, textarea {
+input, select {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
@@ -58,26 +58,25 @@ button:hover {
   background-color: #007aa3;
 }
 
-.loader-container {
+.success-container {
   display: none;
   margin-top: 20px;
+  animation: fadeIn 0.6s ease-in-out;
 }
 
-.hourglass {
-  font-size: 40px;
-  animation: spin 1.5s linear infinite;
+.success-container img {
+  width: 70px;
+  margin-bottom: 15px;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.success-message {
-  display: none;
-  margin-top: 15px;
-  font-size: 14px;
+.success-text {
+  font-size: 15px;
   color: #333;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 </style>
 </head>
@@ -95,21 +94,16 @@ button:hover {
   <form id="formulario">
 
     <input type="text" name="dni" placeholder="DNI del titular" required pattern="[0-9]{7,8}">
-
     <input type="text" name="nombre" placeholder="Nombre completo" required>
-
-    <input type="tel" name="telefono" placeholder="Teléfono de contacto" 
+    <input type="tel" name="telefono" placeholder="Teléfono de contacto"
            pattern="[0-9]{10,13}" required>
-
     <input type="text" name="motivo" placeholder="Motivo del llamado" required>
 
-    <!-- Calendario -->
     <label style="text-align:left; display:block; font-size:13px;">
       Fecha a llamar
     </label>
     <input type="date" name="fecha_llamar" required>
 
-    <!-- Horarios -->
     <label style="text-align:left; display:block; font-size:13px;">
       Horario preferido
     </label>
@@ -125,30 +119,25 @@ button:hover {
 
   </form>
 
-  <div class="loader-container" id="loader">
-    <div class="hourglass">⏳</div>
-  </div>
-
-  <div class="success-message" id="success">
-    Te contactaremos cuanto antes.<br>
-    Nuestro plazo para llamarte es de <b>24 a 48hs hábiles</b>.
+  <div class="success-container" id="success">
+    <img src="tilde-verificacion.png" alt="Verificación exitosa">
+    <div class="success-text">
+      Te contactaremos cuanto antes.<br>
+      Nuestro plazo para llamarte es de <b>24 a 48hs hábiles</b>.
+    </div>
   </div>
 
 </div>
 
 <script>
 
-const scriptURL = https://script.google.com/macros/s/AKfycbxcCb95zo6nrp8XwYoL_KV3pzKBxwBhEprqe4d2Zc6P--jq67R7IoV5AvnH6nhLbVvLcQ/exec;
+const scriptURL = "https://script.google.com/macros/s/AKfycbxcCb95zo6nrp8XwYoL_KV3pzKBxwBhEprqe4d2Zc6P--jq67R7IoV5AvnH6nhLbVvLcQ/exec";
 
 const form = document.getElementById("formulario");
-const loader = document.getElementById("loader");
 const success = document.getElementById("success");
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
-
-  form.style.display = "none";
-  loader.style.display = "block";
 
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
@@ -160,18 +149,16 @@ form.addEventListener("submit", function(e) {
   })
   .then(response => response.json())
   .then(result => {
-      loader.style.display = "none";
+      form.style.display = "none";
       success.style.display = "block";
   })
   .catch(error => {
       alert("Hubo un error. Intente nuevamente.");
-      form.style.display = "block";
-      loader.style.display = "none";
   });
 
 });
+
 </script>
 
 </body>
-
 </html>
