@@ -93,10 +93,9 @@ button:hover {
 
   <form id="formulario">
 
-    <input type="text" name="dni" placeholder="DNI del titular" required pattern="[0-9]{7,8}">
+    <input type="text" name="dni" placeholder="DNI del titular" required>
     <input type="text" name="nombre" placeholder="Nombre completo" required>
-    <input type="tel" name="telefono" placeholder="Teléfono de contacto"
-           pattern="[0-9]{10,13}" required>
+    <input type="tel" name="telefono" placeholder="Teléfono de contacto" required>
     <input type="text" name="motivo" placeholder="Motivo del llamado" required>
 
     <label style="text-align:left; display:block; font-size:13px;">
@@ -147,13 +146,14 @@ form.addEventListener("submit", function(e) {
     body: JSON.stringify(data),
     headers: { "Content-Type": "application/json" }
   })
-  .then(response => response.json())
-  .then(result => {
+  .then(response => response.text())   // 👈 ya no espera JSON
+  .then(() => {
       form.style.display = "none";
       success.style.display = "block";
   })
   .catch(error => {
-      alert("Hubo un error. Intente nuevamente.");
+      alert("Hubo un error al enviar el formulario.");
+      console.error(error);
   });
 
 });
