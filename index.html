@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Solicitud de Llamado - Personal</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #1fa2d6, #2bc0e4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: white;
+  width: 430px;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.logo img {
+  width: 160px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background-color: #0099cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #007aa3;
+}
+
+.loader-container {
+  display: none;
+  margin-top: 20px;
+}
+
+.hourglass {
+  font-size: 40px;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.success-message {
+  display: none;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #333;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">
+    <img src="logo.png" alt="Personal Logo">
+  </div>
+
+  <h2>Solicitud de Llamado</h2>
+
+  <form id="formulario">
+
+    <input type="text" name="dni" placeholder="DNI del titular" required pattern="[0-9]{7,8}">
+
+    <input type="text" name="nombre" placeholder="Nombre completo" required>
+
+    <input type="tel" name="telefono" placeholder="Teléfono de contacto" 
+           pattern="[0-9]{10,13}" required>
+
+    <input type="text" name="motivo" placeholder="Motivo del llamado" required>
+
+    <!-- Calendario -->
+    <label style="text-align:left; display:block; font-size:13px;">
+      Fecha a llamar
+    </label>
+    <input type="date" name="fecha_llamar" required>
+
+    <!-- Horarios -->
+    <label style="text-align:left; display:block; font-size:13px;">
+      Horario preferido
+    </label>
+    <select name="horario_llamar" required>
+      <option value="">Seleccionar horario</option>
+      <option value="Lo antes posible">Lo antes posible</option>
+      <option value="A la mañana">A la mañana</option>
+      <option value="A la tarde">A la tarde</option>
+      <option value="A la noche">A la noche</option>
+    </select>
+
+    <button type="submit">Solicitar llamado</button>
+
+  </form>
+
+  <div class="loader-container" id="loader">
+    <div class="hourglass">⏳</div>
+  </div>
+
+  <div class="success-message" id="success">
+    Te contactaremos cuanto antes.<br>
+    Nuestro plazo para llamarte es de <b>24 a 48hs hábiles</b>.
+  </div>
+
+</div>
+
+<script>
+
+const scriptURL = "TU_URL_AQUI";
+
+const form = document.getElementById("formulario");
+const loader = document.getElementById("loader");
+const success = document.getElementById("success");
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  form.style.display = "none";
+  loader.style.display = "block";
+
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(response => response.json())
+  .then(result => {
+      loader.style.display = "none";
+      success.style.display = "block";
+  })
+  .catch(error => {
+      alert("Hubo un error. Intente nuevamente.");
+      form.style.display = "block";
+      loader.style.display = "none";
+  });
+
+});
+</script>
+
+</body>
+</html>
