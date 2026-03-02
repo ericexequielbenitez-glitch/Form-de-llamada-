@@ -17,7 +17,7 @@ body {
 
 .container {
   background: white;
-  width: 430px;
+  width: 420px;
   padding: 35px;
   border-radius: 12px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.2);
@@ -25,25 +25,41 @@ body {
 }
 
 .logo img {
-  width: 160px;
-  margin-bottom: 20px;
+  width: 150px;
+  margin-bottom: 15px;
 }
 
 h2 {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  display: block;
+  margin-bottom: 6px;
 }
 
 input, select {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
 button {
   width: 100%;
-  padding: 14px;
+  padding: 13px;
+  margin-top: 10px;
   background-color: #0099cc;
   color: white;
   border: none;
@@ -58,16 +74,19 @@ button:hover {
 
 .message-container {
   display: none;
-  margin-top: 20px;
+  margin-top: 25px;
+  text-align: center;
 }
 
 .message-container img {
-  width: 70px;
-  margin-bottom: 15px;
+  width: 65px;
+  margin-bottom: 12px;
 }
 
-.message-text {
-  font-size: 15px;
+.case-number {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 8px;
 }
 </style>
 </head>
@@ -84,29 +103,43 @@ button:hover {
 
   <form id="formulario">
 
-    <input type="text" name="dni" placeholder="DNI del titular" required>
-    <input type="text" name="nombre" placeholder="Nombre completo" required>
-    <input type="tel" name="telefono" placeholder="Teléfono de contacto" required>
-    <input type="text" name="motivo" placeholder="Motivo del llamado" required>
+    <div class="form-group">
+      <input type="text" name="dni" placeholder="DNI del titular" required>
+    </div>
 
-    <label>Fecha a llamar</label>
-    <input type="date" name="fecha_llamar" required>
+    <div class="form-group">
+      <input type="text" name="nombre" placeholder="Nombre completo" required>
+    </div>
 
-    <label>Horario preferido</label>
-    <select name="horario_llamar" required>
-      <option value="">Seleccionar horario</option>
-      <option value="Lo antes posible">Lo antes posible</option>
-      <option value="A la mañana">A la mañana</option>
-      <option value="A la tarde">A la tarde</option>
-      <option value="A la noche">A la noche</option>
-    </select>
+    <div class="form-group">
+      <input type="tel" name="telefono" placeholder="Teléfono de contacto" required>
+    </div>
+
+    <div class="form-group">
+      <input type="text" name="motivo" placeholder="Motivo del llamado" required>
+    </div>
+
+    <div class="form-group">
+      <label>Fecha a llamar</label>
+      <input type="date" name="fecha_llamar" required>
+    </div>
+
+    <div class="form-group">
+      <label>Horario preferido</label>
+      <select name="horario_llamar" required>
+        <option value="">Seleccionar horario</option>
+        <option value="Lo antes posible">Lo antes posible</option>
+        <option value="A la mañana">A la mañana</option>
+        <option value="A la tarde">A la tarde</option>
+        <option value="A la noche">A la noche</option>
+      </select>
+    </div>
 
     <button type="submit">Solicitar llamado</button>
 
   </form>
 
-  <div class="message-container" id="success"></div>
-  <div class="message-container" id="error"></div>
+  <div class="message-container" id="message"></div>
 
 </div>
 
@@ -115,17 +148,13 @@ button:hover {
 const scriptURL = "https://script.google.com/macros/s/AKfycbxO8MJWDBxdcxS9oGLTegD8cjDy3YmpXXSV7NQ0S5zHd9czLuNutO1t52tPpat3fb1HHQ/exec";
 
 const form = document.getElementById("formulario");
-const success = document.getElementById("success");
-const errorBox = document.getElementById("error");
+const message = document.getElementById("message");
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
 
-  // 🔥 Resetear todo SIEMPRE
-  success.style.display = "none";
-  errorBox.style.display = "none";
-  success.innerHTML = "";
-  errorBox.innerHTML = "";
+  message.style.display = "none";
+  message.innerHTML = "";
 
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
@@ -141,27 +170,23 @@ form.addEventListener("submit", function(e) {
 
     if (result === "YA_EXISTE") {
 
-      errorBox.innerHTML = `
+      message.innerHTML = `
         <img src="x-roja.png">
-        <div class="message-text">
+        <div>
           Ya registraste una solicitud en las últimas 24 horas.
         </div>
       `;
 
-      errorBox.style.display = "block";
-
     } else {
 
-      success.innerHTML = `
+      message.innerHTML = `
         <img src="tilde-verificacion.png">
-        <div class="message-text">
-          Número de caso<br>
-          <b style="font-size:20px;">${result}</b>
-        </div>
+        <div>Número de caso</div>
+        <div class="case-number">${result}</div>
       `;
-
-      success.style.display = "block";
     }
+
+    message.style.display = "block";
 
   })
   .catch(error => {
