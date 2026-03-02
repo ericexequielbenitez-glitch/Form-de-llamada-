@@ -112,10 +112,8 @@ button:hover {
 
   </form>
 
-  <!-- MENSAJE ÉXITO -->
+  <!-- Contenedores vacíos -->
   <div class="message-container" id="success"></div>
-
-  <!-- MENSAJE ERROR -->
   <div class="message-container" id="error"></div>
 
 </div>
@@ -131,8 +129,11 @@ const errorBox = document.getElementById("error");
 form.addEventListener("submit", function(e) {
   e.preventDefault();
 
+  // Resetear siempre
   success.style.display = "none";
   errorBox.style.display = "none";
+  success.innerHTML = "";
+  errorBox.innerHTML = "";
 
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
@@ -180,6 +181,7 @@ form.addEventListener("submit", function(e) {
   });
 
 });
+
 </script>
 
 </body>
