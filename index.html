@@ -52,15 +52,22 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background-color: #007aa3;
+}
+
 .message-container {
   display: none;
   margin-top: 20px;
 }
 
-.case-number {
-  font-size: 22px;
-  font-weight: bold;
-  margin-top: 10px;
+.message-container img {
+  width: 70px;
+  margin-bottom: 15px;
+}
+
+.message-text {
+  font-size: 15px;
 }
 </style>
 </head>
@@ -98,22 +105,27 @@ button {
 
   </form>
 
-  <div class="message-container" id="message"></div>
+  <div class="message-container" id="success"></div>
+  <div class="message-container" id="error"></div>
 
 </div>
 
 <script>
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbzM_RBIjytAsRrgMoRdlsgLNxGc444h5l4gwdW_QA-G0nG1v6ppdD-tU-RXvFDKW-2A7A/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbxO8MJWDBxdcxS9oGLTegD8cjDy3YmpXXSV7NQ0S5zHd9czLuNutO1t52tPpat3fb1HHQ/exec";
 
 const form = document.getElementById("formulario");
-const message = document.getElementById("message");
+const success = document.getElementById("success");
+const errorBox = document.getElementById("error");
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
 
-  message.style.display = "none";
-  message.innerHTML = "";
+  // 🔥 Resetear todo SIEMPRE
+  success.style.display = "none";
+  errorBox.style.display = "none";
+  success.innerHTML = "";
+  errorBox.innerHTML = "";
 
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
@@ -129,22 +141,32 @@ form.addEventListener("submit", function(e) {
 
     if (result === "YA_EXISTE") {
 
-      message.innerHTML = `
-        <div>
+      errorBox.innerHTML = `
+        <img src="x-roja.png">
+        <div class="message-text">
           Ya registraste una solicitud en las últimas 24 horas.
         </div>
       `;
 
+      errorBox.style.display = "block";
+
     } else {
 
-      message.innerHTML = `
-        <div>Número de caso</div>
-        <div class="case-number">${result}</div>
+      success.innerHTML = `
+        <img src="tilde-verificacion.png">
+        <div class="message-text">
+          Número de caso<br>
+          <b style="font-size:20px;">${result}</b>
+        </div>
       `;
+
+      success.style.display = "block";
     }
 
-    message.style.display = "block";
-
+  })
+  .catch(error => {
+      alert("Error al enviar el formulario.");
+      console.error(error);
   });
 
 });
