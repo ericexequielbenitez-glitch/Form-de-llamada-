@@ -31,7 +31,6 @@ body {
 
 h2 {
   margin-bottom: 20px;
-  color: #333;
 }
 
 input, select {
@@ -40,7 +39,6 @@ input, select {
   margin-bottom: 15px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 14px;
 }
 
 button {
@@ -54,23 +52,15 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #007aa3;
-}
-
 .message-container {
   display: none;
   margin-top: 20px;
 }
 
-.message-container img {
-  width: 70px;
-  margin-bottom: 15px;
-}
-
-.message-text {
-  font-size: 15px;
-  color: #333;
+.case-number {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 </style>
 </head>
@@ -92,14 +82,10 @@ button:hover {
     <input type="tel" name="telefono" placeholder="Teléfono de contacto" required>
     <input type="text" name="motivo" placeholder="Motivo del llamado" required>
 
-    <label style="text-align:left; display:block; font-size:13px;">
-      Fecha a llamar
-    </label>
+    <label>Fecha a llamar</label>
     <input type="date" name="fecha_llamar" required>
 
-    <label style="text-align:left; display:block; font-size:13px;">
-      Horario preferido
-    </label>
+    <label>Horario preferido</label>
     <select name="horario_llamar" required>
       <option value="">Seleccionar horario</option>
       <option value="Lo antes posible">Lo antes posible</option>
@@ -112,28 +98,22 @@ button:hover {
 
   </form>
 
-  <!-- Contenedores vacíos -->
-  <div class="message-container" id="success"></div>
-  <div class="message-container" id="error"></div>
+  <div class="message-container" id="message"></div>
 
 </div>
 
 <script>
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbyHLmh4b1IvYl-_LH3QUmDxxL68S1AQOMtTJGPth6gUbn-k6RExNCAFaBiZS6otSCXnng/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbzM_RBIjytAsRrgMoRdlsgLNxGc444h5l4gwdW_QA-G0nG1v6ppdD-tU-RXvFDKW-2A7A/exec";
 
 const form = document.getElementById("formulario");
-const success = document.getElementById("success");
-const errorBox = document.getElementById("error");
+const message = document.getElementById("message");
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
 
-  // Resetear siempre
-  success.style.display = "none";
-  errorBox.style.display = "none";
-  success.innerHTML = "";
-  errorBox.innerHTML = "";
+  message.style.display = "none";
+  message.innerHTML = "";
 
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
@@ -149,39 +129,25 @@ form.addEventListener("submit", function(e) {
 
     if (result === "YA_EXISTE") {
 
-      errorBox.innerHTML = `
-        <img src="x-roja.png">
-        <div class="message-text">
-          Ya registraste una solicitud en las últimas 24 horas.<br>
-          Si necesitás asistencia urgente, comunicate por nuestros canales oficiales.
+      message.innerHTML = `
+        <div>
+          Ya registraste una solicitud en las últimas 24 horas.
         </div>
       `;
-
-      errorBox.style.display = "block";
 
     } else {
 
-      success.innerHTML = `
-        <img src="tilde-verificacion.png">
-        <div class="message-text">
-          Tu solicitud fue registrada correctamente.<br><br>
-          Número de caso:<br>
-          <b style="font-size:18px;">${result}</b><br><br>
-          Te contactaremos dentro de 24 a 48 horas hábiles.
-        </div>
+      message.innerHTML = `
+        <div>Número de caso</div>
+        <div class="case-number">${result}</div>
       `;
-
-      success.style.display = "block";
     }
 
-  })
-  .catch(error => {
-      alert("Hubo un error al enviar el formulario.");
-      console.error(error);
+    message.style.display = "block";
+
   });
 
 });
-
 </script>
 
 </body>
