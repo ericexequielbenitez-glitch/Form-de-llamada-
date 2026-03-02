@@ -68,7 +68,12 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:disabled {
+  background-color: #7fbfd4;
+  cursor: not-allowed;
+}
+
+button:hover:enabled {
   background-color: #007aa3;
 }
 
@@ -149,9 +154,18 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbz1Figw7Pcy4efOiHbKPx
 
 const form = document.getElementById("formulario");
 const message = document.getElementById("message");
+const button = form.querySelector("button");
+
+let enviado = false;
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
+
+  if (enviado) return; // 🔒 evita doble envío
+  enviado = true;
+
+  button.disabled = true;
+  button.innerText = "Enviando...";
 
   message.style.display = "none";
   message.innerHTML = "";
@@ -187,7 +201,6 @@ form.addEventListener("submit", function(e) {
     }
 
     message.style.display = "block";
-
   })
   .catch(error => {
       alert("Error al enviar el formulario.");
